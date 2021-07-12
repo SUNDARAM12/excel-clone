@@ -1,61 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        *{
-            box-sizing: border-box;
-        }
-        body{
-            margin: 0;
-            
-        }
-        .container{
-            height: 20rem;
-            width: 20rem;
-            background-color: indianred;
-            position: fixed;
-            top: 50vh;
-            left: 50vw;
-            transform: translate(-50% , -50%);
+      * {
+        box-sizing: border-box;
+      }
 
-        }
-        .middle{
-            background-color: blue;
-            top: 10rem;
-            left: 10rem;
-            transform: translate(-50% , -50%); 
-   }
-   .top,.bottom,.middle{
-       height: 10rem;
-       width: 10rem;
-       position: fixed;
-   }
-   .top{
-       top: 0;
-       left: 0;
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+      }
 
-       background-color: green;
-   }
-   .bottom{
-       bottom: 0;
-       right: 0;
-       background-color: wheat;
-   }
-        
+      .card {
+        height: 15rem;
+        width: 10rem;
+        background-color: yellow;
+        position: relative;
+        box-shadow: -2px 2px 10px 5px #aaa; 
+      }
+
+      h2,
+      p {
+        padding: 10px;
+        text-align: center;
+        font-family: "Raleway", sans-serif;
+      }
+
+      h2 {
+        font-weight: 700;
+      }
+
+      p {
+        font-weight: 300;
+      }
+
+      .price {
+        font-family: "Raleway", sans-serif;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 1.8rem;
+        width: 8rem;
+        background-color: red;
+        position: absolute;
+        top: -0.9rem;
+        right: -2rem;
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="top"></div>
-        <div class="middle"></div>
-        <div class="bottom"></div>
-         
-        
+  </head>
+  <body>
+    <div class="card">
+      <div class="price">Rs 100</div>
+      <h2>Product Title</h2>
+      <p>
+        manforce condom
+      </p>
     </div>
-    
-</body>
+  </body>
 </html>
