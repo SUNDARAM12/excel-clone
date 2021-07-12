@@ -92,6 +92,7 @@ body {
     top: 20vh;
     left: 30px;
     display: flex;
+    z-index: -10;
   }
   .column-tag {
     display: flex;
@@ -105,4 +106,25 @@ body {
     border-right: 1px solid;
     color : white;
   }
+  .cell-section{
+    height: calc(76vh-30px);
+    width: calc(100vw-30px);
+    top: 30px;
+    left: 30px;
+    background-color:white;
+    overflow: auto;
+    position: absolute;
+  }
+  .cell{
+    width: 80px;
+    height: 30px;
+    border: 1px solid;
+    flex-shrink: 0;
+    outline: none;
+
+  }
+  .row{
+    display: flex;
+  }
+
   
