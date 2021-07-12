@@ -11,47 +11,50 @@
         }
         body{
             margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            
         }
         .container{
-            height: 8rem;
-            width: 32rem;
-            display: flex;
-            position: relative;
-            left: -4.5rem;
+            height: 20rem;
+            width: 20rem;
+            background-color: indianred;
+            position: fixed;
+            top: 50vh;
+            left: 50vw;
+            transform: translate(-50% , -50%);
 
         }
-        .circle{
-            height: 8rem;
-            width: 8rem;
-            border-radius: 50%;
-             border: 5px solid white;
-             background-color: red;
-            position: relative;
-        }
-        .bg-circle{
-            background-image: url(https://st2.depositphotos.com/1009634/7235/v/600/depositphotos_72350117-stock-illustration-no-user-profile-picture-hand.jpg);
-        }
+        .middle{
+            background-color: blue;
+            top: 10rem;
+            left: 10rem;
+            transform: translate(-50% , -50%); 
+   }
+   .top,.bottom,.middle{
+       height: 10rem;
+       width: 10rem;
+       position: fixed;
+   }
+   .top{
+       top: 0;
+       left: 0;
+
+       background-color: green;
+   }
+   .bottom{
+       bottom: 0;
+       right: 0;
+       background-color: wheat;
+   }
+        
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="circle bg-circle" style="left:9rem;"></div>
-        <div class="circle bg-circle" style="left:6rem;"></div>
-        <div class="circle bg-circle" style="left:3rem;"></div>
-        <div class="circle" 
-        style="
-         display: flex;
-         justify-content:center; 
-         align-items: center; 
-         font-size: 4rem ; 
-         color: white;
-         font-family: Arial, Helvetica, sans-serif;">
-            +1
-        </div>
+        <div class="top"></div>
+        <div class="middle"></div>
+        <div class="bottom"></div>
+         
+        
     </div>
     
 </body>
