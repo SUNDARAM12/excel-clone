@@ -43,6 +43,7 @@ body {
     justify-content: center;
     border: 1px solid;
     align-items: center;
+    background-color: white;
   }
 .formula-section input {
     display: block;
@@ -66,13 +67,15 @@ body {
     background-color: gray;
     position: fixed;
     top: 20vh;
+    left: 0;
     
   }
 .row-number-section {
     display: inline-block;
     position: fixed;
     top: calc(20vh + 30px);
-    
+    left: 0;
+    z-index: -10;
   }
 .row-number {
     height: 30px;
@@ -105,13 +108,13 @@ body {
     border: none;
     border-right: 1px solid;
     color : white;
+    
   }
   .cell-section{
     height: calc(76vh-30px);
     width: calc(100vw-30px);
     top: 30px;
     left: 30px;
-    background-color:white;
     overflow: auto;
     position: absolute;
   }
@@ -125,6 +128,9 @@ body {
   }
   .row{
     display: flex;
+  }
+  .cell-selected{
+    border: 2px solid blue;
   }
 
   
