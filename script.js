@@ -1,14 +1,16 @@
 let rowNumberSection = document.querySelector(".row-number-section");
-let formulaInput = document.querySelector(".formula-input-section");
+
 let formulaBarSelectedCellArea = document.querySelector(".selected-cell-div");
+
+let formulaInput = document.querySelector(".formula-input-section");
 
 let cellSection = document.querySelector(".cell-section");
 let columnTagsSection = document.querySelector(".column-tag-section");
 
 let lastCell;
- let dataObj = {};
+let dataObj = {};
 
- formulaInput.addEventListener("keydown", function (e) {
+formulaInput.addEventListener("keydown", function (e) {
   if (e.key == "Enter") {
     console.log("now evaluating formula");
 
@@ -30,20 +32,63 @@ let lastCell;
       removeFromDownstream(upstream[k], selectedCellAdd);
     }
 
-    currCellObj.upstream = [];
+    cellObj.upstream = [];
+
+    let formulaArr = typedFormula.split(" ");
+    let cellsInFormula = [];
+
+    for (let i = 0; i < formulaArr.length; i++) {
+      if (
+        formulaArr[i] != "+" &&
+        formulaArr[i] != "-" &&
+        formulaArr[i] != "*" &&
+        formulaArr[i] != "/" &&
+        isNaN(formulaArr[i])
+      ) {
+        cellsInFormula.push(formulaArr[i]);
+      }
+    }
+
+    for (let i = 0; i < cellsInFormula.length; i++) {
+      addToDownstream(cellsInFormula[i], selectedCellAdd);
+    }
+    cellObj.upstream = cellsInFormula; //[A1, B1]
+
+    let valObj = {};
+
+    for (let i = 0; i < cellsInFormula.length; i++) {
+      let cellValue = dataObj[cellsInFormula[i]].value;
+
+      valObj[cellsInFormula[i]] = cellValue;
+    }
+
+    for (let key in valObj) {
+      typedFormula = typedFormula.replace(key, valObj[key]);
+    }
+
+    let newValue = eval(typedFormula);
+
+    lastCell.innerText = newValue;
+
+    cellObj.value = newValue;
+
+    let downstream = cellObj.downstream;
+
+    for (let i = 0; i < downstream.length; i++) {
+      updateCell(downstream[i]);
+    }
+
+    dataObj[selectedCellAdd] = cellObj;
+
+    formulaInput.value = "";
   }
 });
-
 
 cellSection.addEventListener("scroll", function (e) {
   rowNumberSection.style.transform = `translateY(-${e.currentTarget.scrollTop}px)`;
 
-  columnTagsSection.style.transform = `translateX(-${e.currentTarget.scrollLeft}px)`; 
- 
+  columnTagsSection.style.transform = `translateX(-${e.currentTarget.scrollLeft}px)`;
 });
-
-
-//inside this nested for loop we are creating individual cells UI + cell obj
 
 for (let i = 1; i <= 100; i++) {
   let div = document.createElement("div");
@@ -63,43 +108,40 @@ for (let i = 0; i < 26; i++) {
   columnTagsSection.append(div);
 }
 
+//inside this nested for loop we are creating individual cells UI + cell obj
 for (let i = 1; i <= 100; i++) {
   let rowDiv = document.createElement("div");
   rowDiv.classList.add("row");
-  
 
   for (let j = 0; j < 26; j++) {
-    
     let asciiCode = 65 + j;
-
     let reqAlphabet = String.fromCharCode(asciiCode);
-
     let cellAddress = reqAlphabet + i;
-
-   
-
 
     dataObj[cellAddress] = {
       value: undefined,
       formula: undefined,
       upstream: [],
       downstream: [],
+      align: "left",
+      color: "black",
+      bgColor: "white",
     };
+
     let cellDiv = document.createElement("div");
-  
-     cellDiv.addEventListener("input", function (e) {
-      // jis cell pr type kra uske attribute se maine uska cell address fetch kra
+
+    cellDiv.addEventListener("input", function (e) {
       let currCellAddress = e.currentTarget.getAttribute("data-address");
-      //kuki sare cell objects dataObj me store ho rakhe h using their cell address as key
-      //maine jis cell pr click krke type kra uska hi address fetch and uska hi object chahiye
-      //to wo address as key use krke dataObj se fetch krlia req cellObj ko
+
       let currCellObj = dataObj[currCellAddress];
 
       currCellObj.value = e.currentTarget.innerText;
       currCellObj.formula = undefined;
-      //1..loop on upstream.
-      //2..for each cell go to its downstream and remove ourself.
-      //3..apni upstream ko empty kr do.
+
+      //1- Loop on upstream
+      //2- for each cell go to its downstream and remove ourself
+      //3- apni upstream ko empty array krdo
+
       let currUpstream = currCellObj.upstream;
 
       for (let k = 0; k < currUpstream.length; k++) {
@@ -107,31 +149,25 @@ for (let i = 1; i <= 100; i++) {
 
         removeFromDownstream(currUpstream[k], currCellAddress);
       }
-     
+
       currCellObj.upstream = [];
 
       let currDownstream = currCellObj.downstream;
 
+      // C1(20) => [E1]  E1 (2*C1) [40]
+
       for (let i = 0; i < currDownstream.length; i++) {
-
-     updateCell(currDownstream[i]);
-
-
+        updateCell(currDownstream[i]);
       }
+
       dataObj[currCellAddress] = currCellObj;
+
       console.log(dataObj);
-
-
-
-
     });
-   
+
     cellDiv.setAttribute("contentEditable", true);
-
     cellDiv.classList.add("cell");
-
     cellDiv.setAttribute("data-address", cellAddress);
-
     cellDiv.addEventListener("click", function (e) {
       if (lastCell) {
         lastCell.classList.remove("cell-selected");
@@ -152,24 +188,20 @@ for (let i = 1; i <= 100; i++) {
   cellSection.append(rowDiv);
 }
 
-dataObj["A1"].value = 20;
-dataObj["A1"].downstream = ["B1"];
-dataObj["B1"].formula = "2 * A1";
-dataObj["B1"].upstream = ["A1"];
-dataObj["B1"].value = 40;
+if (localStorage.getItem("sheet")) {
+  console.log(1);
+  dataObj = JSON.parse(localStorage.getItem("sheet"));
 
-let a1cell = document.querySelector("[data-address='A1']");
-let b1cell = document.querySelector("[data-address='B1']");
-
-a1cell.innerText = 20;
-b1cell.innerText = 40;
-
+  for (let x in dataObj) {
+    let cell = document.querySelector(`[data-address='${x}']`);
+    if (dataObj[x].value) cell.innerText = dataObj[x].value;
+    // dataObj[x]
+  }
+}
 
 // C1 = Formula(2*A1)
 // A1 = parent
 // C1 = child
-
-
 
 //is function kisi ki upstream se mtlb nhi hai
 //iska bs itna kaam h ki parent do and child do , aur mai parent ki downstream se child ko hta dunga
@@ -193,35 +225,52 @@ function removeFromDownstream(parentCell, childCell) {
   //3- filtered upstream ko wapis save krwado dataObj me req cell me
   dataObj[parentCell].downstream = filteredDownstream;
 }
-function updateCell(Cell){
-  let cellObj = dataObj[Cell]
-  let upstream = cellObj.upstream
-  let formula = cellObj.formula
- // {
- // a1:20;
- // b1:10
- // }
- 
-  let valObj ={};
-  for(let i=0;i<upstream.length;i++){
-    let cellValue = dataObj[upstream[i]].value
-    valObj[upstream[i]]=cellValue;
+
+function updateCell(cell) {
+  let cellObj = dataObj[cell];
+  let upstream = cellObj.upstream; // [(A1-20), B1-10]
+  let formula = cellObj.formula; // A1 + B1
+
+  // upstream me jobhi cell hai unke objects me jaunga whase unki value lekr aunga
+  // wo sari values mai ek object me key value pair form me store krunga where key being the cell address
+
+  // {
+  //   A1:20,
+  //   B1:10
+  // }
+
+  let valObj = {};
+
+  for (let i = 0; i < upstream.length; i++) {
+    let cellValue = dataObj[upstream[i]].value;
+
+    valObj[upstream[i]] = cellValue;
   }
- // a1 + b1
-  for(let key in valObj){
-    formula = formula.replace(key,valObj[key])
- //20 + 10
+
+  //a1 + b1
+
+  for (let key in valObj) {
+    formula = formula.replace(key, valObj[key]);
   }
+
+  //20 + 10
+
   let newValue = eval(formula);
-  let cellOnUi = document.querySelector(`[data-address='${Cell}']`);
+
+  let cellOnUi = document.querySelector(`[data-address='${cell}']`);
   cellOnUi.innerText = newValue;
 
-  dataObj[Cell].value = newValue;
+  dataObj[cell].value = newValue;
 
   let downstream = cellObj.downstream;
 
   for (let i = 0; i < downstream.length; i++) {
     updateCell(downstream[i]);
   }
+}
 
+function addToDownstream(parent, child) {
+  // child ko parent ki downstream me add krna hai
+
+  dataObj[parent].downstream.push(child);
 }
